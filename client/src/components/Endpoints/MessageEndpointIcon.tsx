@@ -165,6 +165,18 @@ const MessageEndpointIcon: React.FC<IconProps> = (props) => {
       icon: <CustomMinimalIcon size={size * 0.7} />,
       name: 'Custom',
     },
+    ['Pinecone Assistant']: {
+      icon: (
+        <img
+          src="/assets/pinecone.png"
+          alt="Pinecone"
+          style={{ width: size * 0.7, height: size * 0.7 }}
+          className="rounded"
+        />
+      ),
+      bg: '#10B981',
+      name: 'ThriveCoach',
+    },
     null: { icon: <GPTIcon size={size * 0.7} />, bg: 'grey', name: 'N/A' },
     default: {
       icon: (

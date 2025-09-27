@@ -3,6 +3,7 @@ const openAI = require('./openAI');
 const custom = require('./custom');
 const google = require('./google');
 const anthropic = require('./anthropic');
+const pinecone = require('./pinecone');
 const { isEnabled } = require('~/server/utils');
 const { EModelEndpoint } = require('librechat-data-provider');
 const {
@@ -41,5 +42,7 @@ router.use([`/${EModelEndpoint.azureOpenAI}`, `/${EModelEndpoint.openAI}`], open
 router.use(`/${EModelEndpoint.anthropic}`, anthropic);
 router.use(`/${EModelEndpoint.google}`, google);
 router.use(`/${EModelEndpoint.custom}`, custom);
+router.use('/pinecone', pinecone);
+router.use('/Pinecone Assistant', pinecone);
 
 module.exports = router;
