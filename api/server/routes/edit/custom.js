@@ -19,12 +19,26 @@ router.post(
   buildEndpointOption,
   setHeaders,
   async (req, res, next) => {
+    const { logger } = require('@librechat/data-schemas');
+    
+    // Log incoming request details
+    logger.info('[Custom Route] Incoming request:', {
+      endpoint: req.endpointOption?.endpoint,
+      assistantName: req.endpointOption?.customEndpoint?.assistantName,
+      hasMessages: !!req.body?.messages,
+      messageCount: req.body?.messages?.length,
+      bodyKeys: Object.keys(req.body || {}),
+      endpointOptionKeys: Object.keys(req.endpointOption || {})
+    });
+    
     // Check if this is a Pinecone Assistant request
     if (req.endpointOption?.endpoint === 'Pinecone Assistant' || 
         req.endpointOption?.customEndpoint?.assistantName === 'thrive-coach') {
+      
+      logger.info('[Custom Route] Routing to Pinecone handler');
+      
       // Use Pinecone handler directly
       const pineconeInitialize = require('~/server/services/Endpoints/pinecone');
-      const { logger } = require('@librechat/data-schemas');
       const { sendEvent } = require('@librechat/api');
       const { Constants } = require('librechat-data-provider');
       

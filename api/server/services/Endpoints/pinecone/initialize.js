@@ -6,8 +6,8 @@ const { Constants, ContentTypes } = require('librechat-data-provider');
 class PineconeClient {
   constructor(apiKey, options = {}) {
     this.apiKey = apiKey;
-    this.baseURL = options.baseURL || 'https://prod-1-data.ke.pinecone.io/assistant/chat';
     this.assistantName = options.assistantName || 'thrive-coach';
+    this.baseURL = options.baseURL || `https://prod-1-data.ke.pinecone.io/assistant/chat/${this.assistantName}`;
     this.req = options.req;
     this.res = options.res;
     this.abortController = options.abortController;
@@ -28,7 +28,6 @@ class PineconeClient {
       : userMessage.content?.map(c => c.text || '').join(' ') || '';
 
     const requestBody = {
-      assistant: this.assistantName,
       messages: [
         {
           role: 'user',
@@ -36,7 +35,7 @@ class PineconeClient {
         }
       ],
       stream: stream,
-      model: 'gpt-4'  // Pinecone Assistant uses GPT-4 by default
+      model: 'gpt-4o'  // Updated to gpt-4o as per documentation
     };
 
     if (this.debug) {
