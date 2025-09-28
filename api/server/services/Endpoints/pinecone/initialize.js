@@ -18,14 +18,27 @@ class PineconeClient {
   cleanCitations(text) {
     if (!text) return text;
     
+    // Log the raw response for debugging
+    logger.debug('[PineconeClient] Raw response before cleaning:', text);
+    
     // Remove inline citation markers like 【1†source】, 【2†source】, etc.
     let cleaned = text.replace(/【\d+†source】/g, '');
     
+    // Remove square bracket citations like [1], [2], [1, pp. 3-11], etc.
+    cleaned = cleaned.replace(/\[\d+(?:,\s*pp?\.\s*[\d\-,\s]+)?\]/g, '');
+    
     // Remove the References section and everything after it
-    const referencesIndex = cleaned.indexOf('References:');
-    if (referencesIndex !== -1) {
-      cleaned = cleaned.substring(0, referencesIndex).trim();
+    // Try both "References:" and "\nReferences:" to catch it with or without newline
+    const referencesPatterns = ['\n\nReferences:', '\nReferences:', 'References:'];
+    for (const pattern of referencesPatterns) {
+      const referencesIndex = cleaned.indexOf(pattern);
+      if (referencesIndex !== -1) {
+        cleaned = cleaned.substring(0, referencesIndex).trim();
+        break;
+      }
     }
+    
+    logger.debug('[PineconeClient] Cleaned response:', cleaned);
     
     return cleaned;
   }
@@ -137,6 +150,7 @@ class PineconeClient {
             if (data.choices && data.choices[0]) {
               const delta = data.choices[0].delta;
               if (delta && delta.content) {
+                logger.debug('[PineconeClient] Raw delta content:', delta.content);
                 const cleanedContent = this.cleanCitations(delta.content);
                 fullContent += cleanedContent;
                 if (onProgress) {
@@ -145,6 +159,7 @@ class PineconeClient {
               }
             } else if (data.content) {
               // Alternative format
+              logger.debug('[PineconeClient] Raw content:', data.content);
               const cleanedContent = this.cleanCitations(data.content);
               fullContent += cleanedContent;
               if (onProgress) {
@@ -152,6 +167,7 @@ class PineconeClient {
               }
             } else if (data.message) {
               // Non-delta format
+              logger.debug('[PineconeClient] Raw message:', data.message);
               const cleanedMessage = this.cleanCitations(data.message);
               fullContent = cleanedMessage;
               if (onProgress) {
