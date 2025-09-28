@@ -8,6 +8,12 @@ export default function useGetSender() {
   return useCallback(
     (endpointOption: TEndpointOption) => {
       const { modelDisplayLabel } = endpointsConfig?.[endpointOption.endpoint ?? ''] ?? {};
+      
+      // Override model display for ThriveCoach
+      if (endpointOption.endpoint === 'custom' && endpointOption.model === 'gpt-4o') {
+        return 'ThriveCoach';
+      }
+      
       return getResponseSender({ ...endpointOption, modelDisplayLabel });
     },
     [endpointsConfig],

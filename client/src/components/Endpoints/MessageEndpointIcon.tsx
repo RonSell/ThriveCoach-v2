@@ -177,6 +177,18 @@ const MessageEndpointIcon: React.FC<IconProps> = (props) => {
       bg: '#10B981',
       name: 'ThriveCoach',
     },
+    ['ThriveCoach (Pinecone)']: {
+      icon: (
+        <img
+          src="/assets/pinecone.png"
+          alt="ThriveCoach"
+          style={{ width: size * 0.7, height: size * 0.7 }}
+          className="rounded"
+        />
+      ),
+      bg: '#10B981',
+      name: 'ThriveCoach',
+    },
     null: { icon: <GPTIcon size={size * 0.7} />, bg: 'grey', name: 'N/A' },
     default: {
       icon: (
@@ -202,6 +214,11 @@ const MessageEndpointIcon: React.FC<IconProps> = (props) => {
 
   if (iconURL && endpointIcons[iconURL]) {
     ({ icon, bg, name } = endpointIcons[iconURL]);
+  }
+
+  // Override model display for ThriveCoach
+  if (endpoint === 'ThriveCoach (Pinecone)' || endpoint === 'custom' && model === 'gpt-4o') {
+    name = 'ThriveCoach';
   }
 
   if (isAssistantsEndpoint(endpoint)) {

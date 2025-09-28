@@ -15,7 +15,7 @@ class PineconeClient {
   }
 
   async chatCompletion(payload, onProgress) {
-    const { messages, stream = true } = payload;
+    const { messages, stream = true, model } = payload;
     
     if (!messages || messages.length === 0) {
       throw new Error('Messages are required for chat completion');
@@ -27,6 +27,9 @@ class PineconeClient {
       ? userMessage.content 
       : userMessage.content?.map(c => c.text || '').join(' ') || '';
 
+    // Map ThriveCoach variations to gpt-4o
+    const actualModel = (model === 'ThriveCoach' || model === 'ThriveCoach (GPT-4o)' || !model) ? 'gpt-4o' : model;
+
     const requestBody = {
       messages: [
         {
@@ -35,8 +38,15 @@ class PineconeClient {
         }
       ],
       stream: stream,
-      model: 'gpt-4o'  // Updated to gpt-4o as per documentation
+      model: actualModel
     };
+    
+    if (this.debug) {
+      logger.debug('[PineconeClient] Request model mapping:', { 
+        inputModel: model, 
+        actualModel: actualModel 
+      });
+    }
 
     if (this.debug) {
       logger.debug('[PineconeClient] Request:', requestBody);

@@ -36,7 +36,7 @@ const handlePineconeStream = async (req, res, next) => {
         sender: 'ThriveCoach',
         isCreatedByUser: false,
         parentMessageId: req.body.parentMessageId,
-        model: 'thrive-coach',
+        model: 'gpt-4o',
       }
     });
 
@@ -86,7 +86,7 @@ const handlePineconeStream = async (req, res, next) => {
         sender: 'ThriveCoach',
         isCreatedByUser: false,
         parentMessageId: req.body.parentMessageId,
-        model: 'thrive-coach',
+        model: 'gpt-4o',
         finish_reason: 'stop',
       }
     });

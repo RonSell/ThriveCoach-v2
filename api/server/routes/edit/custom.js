@@ -25,14 +25,18 @@ router.post(
     logger.info('[Custom Route] Incoming request:', {
       endpoint: req.endpointOption?.endpoint,
       assistantName: req.endpointOption?.customEndpoint?.assistantName,
+      model: req.body?.model,
       hasMessages: !!req.body?.messages,
       messageCount: req.body?.messages?.length,
       bodyKeys: Object.keys(req.body || {}),
-      endpointOptionKeys: Object.keys(req.endpointOption || {})
+      endpointOptionKeys: Object.keys(req.endpointOption || {}),
+      path: req.path,
+      baseUrl: req.baseUrl
     });
     
     // Check if this is a Pinecone Assistant request
-    if (req.endpointOption?.endpoint === 'Pinecone Assistant' || 
+    if (req.endpointOption?.endpoint === 'ThriveCoach (Pinecone)' || 
+        req.endpointOption?.endpoint === 'Pinecone Assistant' ||
         req.endpointOption?.customEndpoint?.assistantName === 'thrive-coach') {
       
       logger.info('[Custom Route] Routing to Pinecone handler');
@@ -68,7 +72,7 @@ router.post(
             sender: 'ThriveCoach',
             isCreatedByUser: false,
             parentMessageId: req.body.parentMessageId,
-            model: 'thrive-coach',
+            model: 'gpt-4o',
           }
         });
 
@@ -90,14 +94,18 @@ router.post(
         const response = await client.chatCompletion(
           {
             messages,
-            stream
+            stream,
+            model: req.body.model || 'ThriveCoach'
           },
           stream ? onProgress : null
         );
 
         if (!stream) {
           // Non-streaming response
-          const content = response.choices[0]?.message?.content || '';
+          const content = response?.choices?.[0]?.message?.content || response?.message?.content || '';
+          if (!content) {
+            logger.error('[Pinecone Custom Route] Empty response:', response);
+          }
           sendEvent(res, {
             event: 'text',
             data: {
@@ -118,7 +126,7 @@ router.post(
             sender: 'ThriveCoach',
             isCreatedByUser: false,
             parentMessageId: req.body.parentMessageId,
-            model: 'thrive-coach',
+            model: 'gpt-4o',
             finish_reason: 'stop',
           }
         });
