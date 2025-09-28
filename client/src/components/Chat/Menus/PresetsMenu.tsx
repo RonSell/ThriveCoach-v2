@@ -20,6 +20,10 @@ const PresetsMenu: FC = () => {
     exportPreset,
   } = usePresets();
   const { preset } = useChatContext();
+  
+  // Hide presets button
+  return null;
+  
   return (
     <Root>
       <Trigger asChild>

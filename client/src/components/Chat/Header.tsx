@@ -38,7 +38,8 @@ export default function Header() {
   return (
     <div className="sticky top-0 z-10 flex h-14 w-full items-center justify-between bg-white p-2 font-semibold text-text-primary dark:bg-gray-800">
       <div className="hide-scrollbar flex w-full items-center justify-between gap-2 overflow-x-auto">
-        <div className="mx-1 flex items-center gap-2">
+        {/* Hide the mx-1 flex items-center gap-2 div */}
+        <div className="mx-1 flex items-center gap-2" style={{ display: 'none' }}>
           <div
             className={`flex items-center gap-2 ${
               !isSmallScreen ? 'transition-all duration-200 ease-in-out' : ''
