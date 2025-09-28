@@ -14,6 +14,13 @@ class PineconeClient {
     this.debug = options.debug || false;
   }
 
+  // Helper function to remove citation markers from responses
+  cleanCitations(text) {
+    if (!text) return text;
+    // Remove citation markers like 【1†source】, 【2†source】, etc.
+    return text.replace(/【\d+†source】/g, '');
+  }
+
   async chatCompletion(payload, onProgress) {
     const { messages, stream = true, model } = payload;
     
@@ -75,7 +82,7 @@ class PineconeClient {
           choices: [{
             message: {
               role: 'assistant',
-              content: data.message || data.content || ''
+              content: this.cleanCitations(data.message || data.content || '')
             }
           }]
         };
@@ -108,7 +115,7 @@ class PineconeClient {
                 choices: [{
                   message: {
                     role: 'assistant',
-                    content: fullContent
+                    content: this.cleanCitations(fullContent)
                   }
                 }]
               });
@@ -121,22 +128,25 @@ class PineconeClient {
             if (data.choices && data.choices[0]) {
               const delta = data.choices[0].delta;
               if (delta && delta.content) {
-                fullContent += delta.content;
+                const cleanedContent = this.cleanCitations(delta.content);
+                fullContent += cleanedContent;
                 if (onProgress) {
-                  onProgress(delta.content);
+                  onProgress(cleanedContent);
                 }
               }
             } else if (data.content) {
               // Alternative format
-              fullContent += data.content;
+              const cleanedContent = this.cleanCitations(data.content);
+              fullContent += cleanedContent;
               if (onProgress) {
-                onProgress(data.content);
+                onProgress(cleanedContent);
               }
             } else if (data.message) {
               // Non-delta format
-              fullContent = data.message;
+              const cleanedMessage = this.cleanCitations(data.message);
+              fullContent = cleanedMessage;
               if (onProgress) {
-                onProgress(data.message);
+                onProgress(cleanedMessage);
               }
             }
 
