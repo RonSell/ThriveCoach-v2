@@ -181,13 +181,13 @@ const MessageEndpointIcon: React.FC<IconProps> = (props) => {
       icon: (
         <img
           src="/assets/pinecone.png"
-          alt="ThriveCoach"
+          alt="Thrive Coach"
           style={{ width: size * 0.7, height: size * 0.7 }}
           className="rounded"
         />
       ),
       bg: '#10B981',
-      name: 'ThriveCoach',
+      name: 'Thrive Coach',
     },
     null: { icon: <GPTIcon size={size * 0.7} />, bg: 'grey', name: 'N/A' },
     default: {

@@ -33,7 +33,7 @@ const handlePineconeStream = async (req, res, next) => {
         messageId,
         conversationId,
         text: '',
-        sender: 'ThriveCoach',
+        sender: 'Thrive Coach',
         isCreatedByUser: false,
         parentMessageId: req.body.parentMessageId,
         model: 'gpt-4o',
