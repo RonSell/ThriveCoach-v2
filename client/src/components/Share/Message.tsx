@@ -49,6 +49,10 @@ export default function Message(props: TMessageProps) {
     messageLabel = 'anonymous';
   } else {
     messageLabel = message.sender ?? '';
+    // Override GPT-4o with ThriveCoach
+    if (messageLabel === 'GPT-4o' || messageLabel === 'gpt-4o') {
+      messageLabel = 'ThriveCoach';
+    }
   }
 
   return (

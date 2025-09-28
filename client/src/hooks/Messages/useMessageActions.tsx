@@ -129,7 +129,12 @@ export default function useMessageActions(props: TMessageActions) {
     } else if (assistant) {
       return assistant.name ?? 'Assistant';
     } else {
-      return message?.sender;
+      let label = message?.sender;
+      // Override GPT-4o with ThriveCoach
+      if (label === 'GPT-4o' || label === 'gpt-4o') {
+        label = 'ThriveCoach';
+      }
+      return label;
     }
   }, [message, agent, assistant, UsernameDisplay, user, localize]);
 
