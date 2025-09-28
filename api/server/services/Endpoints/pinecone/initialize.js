@@ -17,8 +17,17 @@ class PineconeClient {
   // Helper function to remove citation markers from responses
   cleanCitations(text) {
     if (!text) return text;
-    // Remove citation markers like 【1†source】, 【2†source】, etc.
-    return text.replace(/【\d+†source】/g, '');
+    
+    // Remove inline citation markers like 【1†source】, 【2†source】, etc.
+    let cleaned = text.replace(/【\d+†source】/g, '');
+    
+    // Remove the References section and everything after it
+    const referencesIndex = cleaned.indexOf('References:');
+    if (referencesIndex !== -1) {
+      cleaned = cleaned.substring(0, referencesIndex).trim();
+    }
+    
+    return cleaned;
   }
 
   async chatCompletion(payload, onProgress) {
